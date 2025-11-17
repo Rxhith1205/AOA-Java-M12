@@ -1,79 +1,114 @@
 
-# EX 2D Pattern Matching using Naive Approach.
-## DATE:04/09/25
+# EX 2E Pattern Matching using KMP Algorithm.
+## DATE:08/09/25
 ## AIM:
-To write a Java program to for given constraints.
-Given text string with length n and a pattern with length m, the task is to prints all occurrences of pattern in text.
-Note: You may assume that n > m.
+To write a Java program for the following constraints.
+Longest Palindromic Substring
+Given a string s, return the longest palindromic substring in s.
+using Manacher's Algorithm
 
-Examples: 
-
-Input:  text = "THIS IS A TEST TEXT", pattern = "TEST"
-Output: Pattern found at index 10
-
-Input:  text =  "AABAACAADAABAABA", pattern = "AABA"
-Output: Pattern found at index 0, Pattern found at index 9, Pattern found at index 12
 ## Algorithm
 1.Start the program.
-Read the input string text and the substring pattern from the user.
+Read the input string s from the user and preprocess it by inserting special characters (#) between each letter and at both ends (^ at start and $ at end) to handle even-length palindromes uniformly.
 
 2.Initialize variables:
-Let n = length of text and m = length of pattern.
 
-3.Slide the pattern over the text:
-For each position i from 0 to n - m:
+cen = 0 → current center of palindrome
 
-Compare the substring of text starting at index i with the pattern.
+r = 0 → right boundary of current palindrome
 
-4.Check for match:
+p[] → array to store palindrome radius for each character
 
-For each character j in the pattern, check if text[i + j] == pattern[j].
+3.Iterate through each character in the preprocessed string:
 
-If all characters match (j == m), print "Pattern found at index i".
+Find mirror position mir = 2 * cen - i.
 
-5.End the program.
-Stop after scanning the entire text. 
+If i < r, set p[i] = min(r - i, p[mir]).
+
+Expand palindrome centered at i while matching characters on both sides.
+
+If the palindrome expands beyond r, update cen = i and r = i + p[i].
+
+4.Find the longest palindrome:
+
+Traverse array p[] to find the maximum radius (maxlen) and its center (cur).
+
+Compute the starting index in the original string as (cur - maxlen) / 2.
+
+5.Display the result:
+Extract the substring from the original string using the computed start and length, print the Longest Palindromic Substring, and stop the program.
 
 ## Program:
 ```
 /*
 Program to implement Reverse a String
-Developed by: ADITHYA V
-Register Number: 212223110001
+Developed by: ROHITH HARIHARAN M
+Register Number: 212223220087
 */
-
 import java.util.Scanner;
 
-public class NaivePatternSearch {
-    //Type code here....
-    static void search(String text,String pattern){
-        int n=text.length();
-        int m=pattern.length();
-        for(int i=0;i<=n-m;i++){
-            int j;
-            for(j=0;j<m;j++){
-                if(text.charAt(i+j)!=pattern.charAt(j))
-                break;
-            }
-            if(j==m)
-                System.out.println("Pattern found at index "+i);
-        
+public class Solution {
+    public static String preprocess(String s)
+    {
+        StringBuilder str=new StringBuilder("^");
+        int n=s.length();
+        for(int i=0;i<n;i++)
+        {
+            str.append("#").append(s.charAt(i));
+        }
+        str.append("#$");
+        return str.toString();
     }
+    public String longestPalindrome(String s) {
+        //Type code here...
+        String ch=preprocess(s);
+        int n=ch.length();
+        int cen=0,r=0,i;
+        int[] p=new int[n];
+        for(i=1;i<n-1;i++)
+        {
+            int mir=2*cen-i;
+            if(i<r)
+            {
+                p[i]=Math.min(r-i,p[mir]);
+            }
+            else
+            {
+                p[i]=0;
+            }
+            while(ch.charAt(i+1+p[i])==ch.charAt(i-1-p[i]))
+            {
+                ++p[i];
+            }
+            if(i+p[i]>r)
+            {
+                cen=i;
+                r=i+p[i];
+            }
+        }
+        int maxlen=0,cur=0;
+        for(i=1;i<n-1;i++)
+        {
+            if(p[i]>maxlen)
+            {
+                maxlen=p[i];
+                cur=i;
+            }
+        }
+        int st=(cur-maxlen)/2;
+        return s.substring(st,st+maxlen);
     }
 
+    // Main method for user input
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        //System.out.println("Enter a string:");
+        String input = scanner.nextLine();
 
-        // Taking input from the user
-        //.out.print("Enter the text: ");
-        String text = scanner.nextLine();
+        Solution sol = new Solution();
+        String result = sol.longestPalindrome(input);
 
-        //System.out.print("Enter the pattern: ");
-        String pattern = scanner.nextLine();
-
-        // Search for pattern in the text
-        search(text, pattern);
-
+        System.out.println("Longest Palindromic Substring: " + result);
         scanner.close();
     }
 }
@@ -83,7 +118,7 @@ public class NaivePatternSearch {
 
 ## Output:
 
-<img width="750" height="253" alt="image" src="https://github.com/user-attachments/assets/273d112b-52e2-4543-9b94-b83b70c05828" />
+<img width="810" height="193" alt="image" src="https://github.com/user-attachments/assets/02c7cd68-2026-4440-9b0f-4c61eec30529" />
 
 
 ## Result:
