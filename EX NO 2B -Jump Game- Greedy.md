@@ -43,8 +43,8 @@ Print the minimum number of jumps to reach the last index (or -1 if unreachable)
 ```
 /*
 Program to implement Reverse a String
-Developed by: ADITHYA V
-Register Number: 212223110001
+Developed by: ROHITH HARIHARAN M    
+Register Number: 212223220087
 */
 import java.util.Scanner;
 
